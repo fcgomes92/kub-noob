@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kub-noob
+  labels:
+    app: kub-noob
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kub-noob
+  template:
+    metadata:
+      labels:
+        app: kub-noob
+    spec:
+      containers:
+        - name: kub-noob
+          image: kub-noob
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kub-noob
+  namespace: default
+  labels:
+    app: kub-noob
+spec:
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
+  selector:
+    app: kub-noob
+  type: LoadBalancer
+
